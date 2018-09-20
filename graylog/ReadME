@@ -1,0 +1,13 @@
+I do not know if this counts, but I found grok patterns working differently for logstash and graylog.
+Here are URLs, which were useful during my studies of a subject:
+
+Constructor and matcher app:
+http://grokconstructor.appspot.com/
+http://grokconstructor.appspot.com/do/match
+
+Syntax helper:
+http://grokconstructor.appspot.com/RegularExpressionSyntax.txt
+
+Sendmail grok examples I derived from:
+https://gist.githubusercontent.com/poolski/9911628/raw/7bcf75258e93b9a498c676e361e77bc0cd3a78e8/sendmail.grok
+

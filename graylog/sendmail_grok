@@ -1,0 +1,25 @@
+Sendmail has rich log lines variation.
+Below are my attempts to do a maximum match with grok patterns on lines I seen.
+Some of expressions contain references to constructions from ReadME URLs
+
+CHECK_RCPT1	%{QID:qid}?:\sruleset=%{WORD:ruleset},\sarg1=(<?)%{EMAIL:arg1}(>?),\srelay=\[%{IPV4:relay}\],\sreject=%{GREEDYDATA:reject}
+CHECK_RCPT2	%{QID:qid}?:\sruleset=%{WORD:ruleset},\sarg1=(<?)%{EMAIL:arg1}(>?),\srelay=%{HOSTNAME}\s\[%{IPV4}\],\sreject=%{GREEDYDATA:reject}
+CHECK_RCPT3	%{QID:qid}?:\sruleset=%{WORD:ruleset},\sarg1=(<?)%{EMAIL:arg1}(>?),\srelay=%{HOSTNAME},\sreject=%{GREEDYDATA:reject}
+CHECK_RELAY_ONE_SIZE_FITS_ALL	ruleset=%{WORD:ruleset},\sarg1=(?:%{HOSTNAME:arg1_host}|\[%{IPV4:arg1_ip}\]),\sarg2=%{IPV4:arg2},\srelay=(?:%{HOSTNAME}\s)?\[%{IPV4:relay}\](?: %{GREEDYDATA:relay_info})?,\sreject=(%{NUMBER:code}\s%{DSN:dsn}\s%{DATA:reason}\s\[%{DATA}\]\s%{GREEDYDATA:reject})
+CHECK_RELAY1	ruleset=%{WORD:ruleset},\sarg1=\[%{IPV4:arg1}\],\sarg2=%{IPV4:arg2},\srelay=%{HOSTNAME}\s\[%{IPV4:relay}\],\sreject=%{GREEDYDATA:reject}
+CHECK_RELAY2	ruleset=%{WORD:ruleset},\sarg1=\[%{IPV4:arg1}\],\sarg2=%{IPV4:arg2},\srelay=\[%{IPV4:relay}\],\sreject=%{GREEDYDATA:reject}
+CHECK_RELAY3	ruleset=%{WORD:ruleset},\sarg1=%{HOSTNAME:arg1},\sarg2=%{IPV4:arg2},\srelay=%{HOSTNAME}\s\[%{IPV4:relay}\],\sreject=%{GREEDYDATA:reject}
+CHECK_RELAY4	ruleset=%{WORD:ruleset},\sarg1=%{HOSTNAME:arg1},\sarg2=%{IPV4:arg2},\srelay=\[%{IPV4:relay}\],\sreject=%{GREEDYDATA:reject}
+
+SENDMAIL_FROM1 (%{QID:qid}:\s)?from=<%{EMAIL:from}>,\ssize=%{NUMBER:size},\sclass=%{NUMBER:class},\snrcpts=%{NUMBER:nrcpts},\smsgid=<%{DATA:msgid}>,\sproto=%{WORD:proto},\sdaemon=%{WORD:daemon},\srelay=\[%{IPV4:relay}\]
+SENDMAIL_FROM2 (%{QID:qid}:\s)?from=<%{EMAIL:from}>,\ssize=%{NUMBER:size},\sclass=%{NUMBER:class},\snrcpts=%{NUMBER:nrcpts},\smsgid=<%{DATA:msgid}>,\sproto=%{WORD:proto},\sdaemon=%{WORD:daemon},\srelay=%{HOSTNAME}\s\[%{IPV4:relay}\]
+SENDMAIL_FROM3 (%{QID:qid}:\s)?from=<%{EMAIL:from}>,\ssize=%{NUMBER:size},\sclass=%{NUMBER:class},\snrcpts=%{NUMBER:nrcpts},\sproto=%{WORD:proto},\sdaemon=%{WORD:daemon},\srelay=\[%{IPV4:relay}\]
+SENDMAIL_FROM4 (%{QID:qid}:\s)?from=<%{EMAIL:from}>,\ssize=%{NUMBER:size},\sclass=%{NUMBER:class},\snrcpts=%{NUMBER:nrcpts},\sproto=%{WORD:proto},\sdaemon=%{WORD:daemon},\srelay=%{HOSTNAME}\s\[%{IPV4:relay}\]
+
+SENDMAIL_MILTER_ADD (%{QID:qid}:\s)*Milter\s%{WORD:action}:\s%{WORD:action_target}:\s%{GREEDYDATA:actionkey}:\s%{GREEDYDATA:actionkey_value}
+
+SENDMAIL_TO1 (%{QID:qid}:\s)?to=<%{EMAIL:to}>,\sdelay=%{DATA:delay},\spri=%{NUMBER:pri},\sstat=%{DATA}\s%{GREEDYDATA:stat}
+SENDMAIL_TO2 (%{QID:qid}:\s)?to=<%{EMAIL:to}>,\sctladdr=<%{EMAIL:ctladdr}>(%{DATA})?,\sdelay=%{DATA:delay},\sxdelay=%{DATA:xdelay},\smailer=%{WORD:mailer},\spri=%{NUMBER:pri},\sdsn=%{DATA:dsn},\sstat=%{WORD:stat}(\s%{GREEDYDATA})?
+SENDMAIL_TO3 (%{QID:qid}:\s)?to=<?%{EMAIL:to}>?,\sdelay=%{DATA:delay},\sxdelay=%{DATA:xdelay},\smailer=%{WORD:mailer},\spri=%{NUMBER:pri},\sdsn=%{DATA:dsn},\sstat=%{WORD:stat}(\s%{GREEDYDATA})?
+USER_UNKNOWN  (%{QID:qid}:\s)?<%{EMAIL:email}>\.\.\.\s%{GREEDYDATA:response}
+SENDMAIL_DURING_CONN_EVENTS (%{QID:qid}:\s)?%{IPORHOST}?\s?\[%{IPORHOST:ip}\]\s?%{GREEDYDATA:ip_message}
